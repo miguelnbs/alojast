@@ -1,0 +1,100 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { formatBRL } from "@/lib/productAssets";
+
+export const Route = createFileRoute("/admin/pedidos")({
+  component: AdminOrders,
+});
+
+const STATUSES = ["pending", "paid", "shipped", "delivered", "cancelled"] as const;
+
+function AdminOrders() {
+  const qc = useQueryClient();
+  const [filter, setFilter] = useState<string>("all");
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  const { data: orders } = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*, order_items(*)")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const setStatus = async (id: string, status: typeof STATUSES[number]) => {
+    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Status atualizado");
+    qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    qc.invalidateQueries({ queryKey: ["admin-products"] });
+  };
+
+  const filtered = (orders ?? []).filter((o: any) => filter === "all" || o.status === filter);
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="display text-4xl">Pedidos</h1>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)} className="rounded-sm border border-border bg-surface px-3 py-2 text-sm">
+          <option value="all">Todos</option>
+          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {filtered.map((o: any) => (
+          <article key={o.id} className="rounded-sm border border-border bg-surface">
+            <header className="flex flex-wrap items-center justify-between gap-3 p-4">
+              <div>
+                <div className="text-sm font-bold">#{o.id.slice(0, 8)} — {o.customer_name}</div>
+                <div className="text-xs text-muted-foreground">
+                  {new Date(o.created_at).toLocaleString("pt-BR")} · {o.customer_phone} · {o.payment_method}
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-primary">{formatBRL(o.total_cents)}</span>
+                <select value={o.status} onChange={(e) => setStatus(o.id, e.target.value as typeof STATUSES[number])} className="rounded-sm border border-border bg-background px-2 py-1 text-xs uppercase tracking-wider">
+                  {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <button onClick={() => setExpanded(expanded === o.id ? null : o.id)} className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary">
+                  {expanded === o.id ? "Fechar" : "Detalhes"}
+                </button>
+              </div>
+            </header>
+            {expanded === o.id && (
+              <div className="grid gap-4 border-t border-border p-4 sm:grid-cols-2">
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground">Itens</h3>
+                  <ul className="mt-2 space-y-1 text-sm">
+                    {o.order_items.map((it: any) => (
+                      <li key={it.id} className="flex justify-between">
+                        <span>{it.quantity}x {it.product_name} {it.variant_name && `(${it.variant_name})`}</span>
+                        <span>{formatBRL(it.unit_price_cents * it.quantity)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-xs uppercase tracking-wider text-muted-foreground">Endereço & contato</h3>
+                  <p className="mt-2 text-sm">{o.customer_email}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {o.address?.street}, {o.address?.number} {o.address?.complement} — {o.address?.neighborhood}, {o.address?.city} · CEP {o.address?.zip}
+                  </p>
+                  {o.notes && <p className="mt-2 text-xs italic text-muted-foreground">Obs: {o.notes}</p>}
+                </div>
+              </div>
+            )}
+          </article>
+        ))}
+        {filtered.length === 0 && <div className="rounded-sm border border-border bg-surface p-10 text-center text-muted-foreground">Nenhum pedido.</div>}
+      </div>
+    </div>
+  );
+}
