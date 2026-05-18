@@ -32,3 +32,9 @@ dist-ssr
 *.sw?
 
 .workspace/
+
+.env
+.env.*
+!.env.example
+.workspace/
+tsconfig.tsbuildinfo
