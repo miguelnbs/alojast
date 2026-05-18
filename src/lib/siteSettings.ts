@@ -21,7 +21,7 @@ export type SiteSettings = {
 
 export const DEFAULTS: SiteSettings = {
   hero: {
-    badge: "+5.000 produtos vendidos",
+    badge: "+10.000 produtos vendidos",
     title_line1: "PEDIU,",
     title_line2: "CHEGOU.",
     subtitle: "Eletrônicos, camisas, fones, smartwatches e variedades com a confiança de quem já entregou pra mais de 5 mil clientes. Entrega por motoboy. Pix, cartão e dinheiro.",
@@ -29,8 +29,8 @@ export const DEFAULTS: SiteSettings = {
     cta_secondary: "Ver categorias",
   },
   stats: [
-    { k: "6.087", v: "seguidores no IG" },
-    { k: "+5K", v: "produtos vendidos" },
+    { k: "+6K", v: "seguidores no IG" },
+    { k: "+10K", v: "produtos vendidos" },
     { k: "2018", v: "fundada em" },
   ],
   marquee: ["PIX","CARTÃO","DINHEIRO","MOTOBOY","ENTREGA RÁPIDA","GARANTIDA","SINCE 2018","ST ELETRÔNICOS"],

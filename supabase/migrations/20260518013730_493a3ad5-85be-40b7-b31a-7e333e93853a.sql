@@ -21,7 +21,7 @@ CREATE TRIGGER trg_site_settings_updated
 
 INSERT INTO public.site_settings (key, value) VALUES
   ('hero', jsonb_build_object(
-    'badge', '+5.000 produtos vendidos',
+    'badge', '+10.000 produtos vendidos',
     'title_line1', 'PEDIU,',
     'title_line2', 'CHEGOU.',
     'subtitle', 'Eletrônicos, camisas, fones, smartwatches e variedades com a confiança de quem já entregou pra mais de 5 mil clientes. Entrega por motoboy. Pix, cartão e dinheiro.',
@@ -29,8 +29,8 @@ INSERT INTO public.site_settings (key, value) VALUES
     'cta_secondary', 'Ver categorias'
   )),
   ('stats', jsonb_build_array(
-    jsonb_build_object('k','6.087','v','seguidores no IG'),
-    jsonb_build_object('k','+5K','v','produtos vendidos'),
+    jsonb_build_object('k','+6K','v','seguidores no IG'),
+    jsonb_build_object('k','+10K','v','produtos vendidos'),
     jsonb_build_object('k','2018','v','fundada em')
   )),
   ('marquee', jsonb_build_array('PIX','CARTÃO','DINHEIRO','MOTOBOY','ENTREGA RÁPIDA','GARANTIDA','SINCE 2018','ST ELETRÔNICOS')),

@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "A Loja ST — Eletrônicos, Camisas e Variedades com Entrega Rápida" },
-      { name: "description", content: "+5.000 produtos vendidos. Fones, smartwatch, camisas e eletrônicos. Pix, cartão e dinheiro. Cadastre-se e peça em 1 clique." },
+      { name: "description", content: "+10.000 produtos vendidos. Fones, smartwatch, camisas e eletrônicos. Pix, cartão e dinheiro. Cadastre-se e peça em 1 clique." },
       { property: "og:title", content: "A Loja ST — Pediu, Chegou" },
       { property: "og:description", content: "Loja oficial @alojast. Eletrônicos, camisas e variedades com entrega rápida." },
     ],
