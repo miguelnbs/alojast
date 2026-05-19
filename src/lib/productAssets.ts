@@ -23,7 +23,16 @@ for (const [path, url] of Object.entries(categoryImages)) {
 
 export function productImage(filename: string | null | undefined): string {
   if (!filename) return "";
-  return productMap[filename] ?? categoryMap[filename] ?? "";
+
+  if (
+    filename.startsWith("http://") ||
+    filename.startsWith("https://") ||
+    filename.startsWith("/")
+  ) {
+    return filename;
+  }
+
+  return productMap[filename] ?? categoryMap[filename] ?? filename;
 }
 
 export function formatBRL(cents: number): string {

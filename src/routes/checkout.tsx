@@ -165,6 +165,7 @@ function CheckoutPage() {
                   <img src={i.image} alt={i.name} className="h-12 w-12 rounded-sm bg-white object-cover" />
                   <div className="flex-1">
                     <div className="font-medium">{i.name}</div>
+                    {i.variantName && <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{i.variantName}</div>}
                     <div className="text-xs text-muted-foreground">{i.quantity}x {formatBRL(i.unitPrice)}</div>
                   </div>
                   <div className="font-bold">{formatBRL(i.unitPrice * i.quantity)}</div>
