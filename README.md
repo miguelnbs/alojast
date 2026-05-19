@@ -1,173 +1,348 @@
 # A Loja ST — E-commerce Full-Stack
 
-> Loja oficial **@alojast** — Eletrônicos, camisas e variedades com entrega rápida por motoboy.
-> Plataforma de e-commerce completa, customizada do zero, com painel administrativo, autenticação, gestão de pedidos, trocas e atualização automática de estoque.
+Projeto de e-commerce desenvolvido com **React, TypeScript, TanStack Start, Supabase e Cloudflare Workers**.  
+A aplicação simula uma loja online com catálogo, categorias, página de produto, carrinho, checkout, autenticação de usuários e painel administrativo.
 
-**🔗 URL ao vivo:** https://lojast.lovable.app
-
----
-
-## ✨ Funcionalidades
-
-### Frontend (público)
-- **Home institucional** totalmente editável (hero, estatísticas, marquee, FAQ, contatos, rodapé)
-- **Cadastro inline** direto na home — usuário cria conta em 3 campos
-- **Catálogo por categoria** (`/c/:slug`) com imagens dinâmicas
-- **Página de produto** (`/produto/:slug`) com variantes e descrição
-- **Sacola persistente** (sidebar drawer + página `/carrinho`) salva em `localStorage`
-- **Checkout** (`/checkout`) com dados, endereço e seleção de pagamento (Pix, Cartão, Dinheiro)
-- **Área do cliente** (`/minha-conta`) — histórico de pedidos em tempo real e solicitação de troca em 1 clique
-- **Login / Cadastro** dedicados (`/login`, `/cadastro`)
-- **SEO** com meta tags `og:` e `twitter:` por rota
-
-### Painel Administrativo (`/admin/*`)
-- **Dashboard** — receita confirmada, pedidos pendentes, estoque baixo, trocas pendentes
-- **Produtos** — edição inline de preço, promoção, estoque e status (ativo/inativo)
-- **Pedidos** — filtro por status, detalhes do cliente, alteração de status (pending → paid → shipped → delivered → cancelled)
-- **Trocas** — aprovação/rejeição de solicitações
-- **Editar site** — edita textos da home (hero, FAQ, marquee, contato, rodapé) em tempo real
-
-### Backend & Automações
-- **Autenticação por e-mail/senha** (Supabase Auth) com confirmação automática
-- **Roles separadas** (`user_roles` + função `has_role`) — padrão de segurança contra escalonamento de privilégios
-- **Trigger automático** que cria perfil + role `customer` ao se registrar
-- **Triggers de estoque** automáticos:
-  - Pedido marcado como **paid** → decrementa estoque
-  - Pedido **cancelled** após paid → restaura estoque
-  - Troca **approved** → devolve item ao estoque e debita o novo
-- **Row-Level Security (RLS)** em todas as tabelas
-- **Server Functions** (TanStack Start) com middleware `requireSupabaseAuth` para operações administrativas (claim do primeiro admin, etc.)
+**URL em produção:** https://tanstack-start-app.alojast.workers.dev/
 
 ---
 
-## 🛠️ Stack & Tecnologias
+## Visão geral
 
-### Core
-| Categoria | Tecnologia |
-|---|---|
-| Framework full-stack | **TanStack Start v1** (React 19, SSR/SSG, Server Functions) |
-| Build tool | **Vite 7** |
-| Linguagem | **TypeScript** (modo strict) |
-| Estilo | **Tailwind CSS v4** + tokens semânticos em `oklch` |
-| UI primitives | **shadcn/ui** (Radix UI) |
-| Ícones | **lucide-react** |
-| Roteamento | **TanStack Router** (file-based, type-safe) |
-| Data fetching | **TanStack Query (React Query) v5** |
-| Notificações | **Sonner** |
-| Forms | **react-hook-form** + **zod** |
+O objetivo do projeto foi construir e publicar uma aplicação web completa, conectada a banco de dados, com fluxo real de deploy e organização profissional de ambiente.
 
-### Backend (Lovable Cloud — Supabase)
-| Serviço | Uso |
-|---|---|
-| **PostgreSQL 15** | Banco relacional principal |
-| **Supabase Auth** | E-mail/senha com confirmação automática |
-| **Row-Level Security** | Política por tabela (admin vs usuário) |
-| **Triggers SQL** | Automação de estoque e criação de perfis |
-| **Security-Definer Functions** | `has_role`, `handle_new_user`, `handle_order_stock`, `handle_exchange_stock` |
-| **Edge Runtime** | Cloudflare Workers (deploy serverless) |
+Durante o desenvolvimento foram configurados:
 
-### Integrações Preparadas
-- **Mercado Pago** — token `MERCADO_PAGO_ACCESS_TOKEN` já armazenado como secret no servidor; pronto para receber a integração de Pix + Cartão (Visa/Master débito e crédito) via webhook quando o titular da conta liberar a configuração.
-- **WhatsApp** — links profundos para atendimento direto
+- Frontend com React, TypeScript e TanStack Start.
+- Backend e banco de dados com Supabase.
+- Autenticação de usuários com Supabase Auth.
+- Controle de permissões para cliente e administrador.
+- Painel administrativo para gerenciar produtos, pedidos, trocas e textos do site.
+- Catálogo público com categorias e produtos dinâmicos.
+- Variações de produtos, como tamanhos, cores e opções.
+- Carrinho persistente no navegador.
+- Checkout com endereço, dados do cliente e forma de pagamento.
+- Deploy serverless com Cloudflare Workers usando Wrangler.
+- Versionamento com Git e GitHub.
+- Proteção de chaves sensíveis usando secrets no Cloudflare.
 
 ---
 
-## 📂 Modelo de Dados
+## Tecnologias utilizadas
 
+### Frontend
+
+- **React 19**
+- **TypeScript**
+- **TanStack Start**
+- **TanStack Router**
+- **TanStack Query**
+- **Vite**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **Radix UI**
+- **Lucide React**
+- **Sonner** para notificações
+
+### Backend e banco de dados
+
+- **Supabase**
+- **PostgreSQL**
+- **Supabase Auth**
+- **Row Level Security — RLS**
+- **SQL migrations**
+- **Triggers e functions no banco**
+
+### Deploy e infraestrutura
+
+- **Cloudflare Workers**
+- **Wrangler**
+- **Cloudflare secrets**
+- **Git**
+- **GitHub**
+- **Node.js / npm**
+
+---
+
+## Funcionalidades implementadas
+
+### Área pública
+
+- Página inicial institucional.
+- Listagem de categorias.
+- Páginas de categoria, como:
+  - `/c/fones`
+  - `/c/camisas`
+  - `/c/smartwatch`
+  - `/c/eletronicos`
+- Página individual de produto.
+- Exibição de preço normal e preço promocional.
+- Exibição de estoque.
+- Seleção de variações do produto:
+  - tamanhos de camisa;
+  - cores de fones;
+  - opções de smartwatch;
+  - opções de eletrônicos.
+- Exibição de formas de pagamento:
+  - Pix;
+  - Cartão;
+  - Dinheiro.
+- Carrinho persistente usando `localStorage`.
+- Página de checkout.
+- Cadastro e login de usuários.
+- Área do cliente com histórico de pedidos.
+- Solicitação de troca de produto.
+
+### Painel administrativo
+
+O projeto possui uma área administrativa acessível por `/admin`, protegida por autenticação e controle de permissões.
+
+Funcionalidades do painel:
+
+- Dashboard com informações gerais.
+- Gestão de produtos.
+- Edição de preço, promoção, estoque e status do produto.
+- Gestão de pedidos.
+- Atualização de status de pedidos.
+- Gestão de solicitações de troca.
+- Edição de conteúdos do site, como hero, FAQ, contato e rodapé.
+- Reivindicação do primeiro administrador quando ainda não existe admin cadastrado.
+
+---
+
+## Correções e ajustes realizados
+
+Durante o desenvolvimento e publicação, foram feitos ajustes importantes para o projeto funcionar corretamente em produção:
+
+### 1. Configuração do Supabase
+
+Foram configuradas as variáveis necessárias para conectar a aplicação ao Supabase:
+
+```env
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_SUPABASE_PROJECT_ID=
 ```
-profiles         (id, full_name, phone)               -- 1:1 com auth.users
-user_roles       (user_id, role: admin | customer)    -- segurança contra escalation
-categories       (slug, name, image_url, sort_order)
-products         (slug, name, price_cents, sale_price_cents, stock, active, featured, category_id)
-product_variants (product_id, name, stock)
-orders           (user_id, customer_*, address jsonb, total_cents, status, payment_method)
-order_items      (order_id, product_id, quantity, unit_price_cents)
-exchange_requests(order_id, user_id, reason, new_product_id, status)
-site_settings    (key, value jsonb)                   -- conteúdos editáveis da home
+
+Também foram configuradas variáveis server-side para o ambiente Cloudflare Workers:
+
+```env
+SUPABASE_URL=
+SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Enums: `app_role`, `order_status` (pending|paid|shipped|delivered|cancelled), `exchange_status`.
+A `SUPABASE_SERVICE_ROLE_KEY` é usada apenas no servidor e não deve ser exposta no frontend ou enviada ao GitHub.
 
 ---
 
-## 🚀 Como rodar localmente
+### 2. Publicação no GitHub
+
+O projeto foi inicializado com Git, versionado e enviado para um repositório remoto no GitHub.
+
+Fluxo utilizado:
 
 ```bash
-# Instalar dependências
-bun install
-
-# Variáveis de ambiente
-# VITE_SUPABASE_URL=...
-# VITE_SUPABASE_PUBLISHABLE_KEY=...
-
-# Dev server
-bun run dev
-
-# Build de produção
-bun run build
+git init
+git add .
+git commit -m "deploy inicial"
+git branch -M main
+git remote add origin https://github.com/usuario/repositorio.git
+git push -u origin main
 ```
 
-> O projeto é entregue conectado à infra **Lovable Cloud** (Supabase gerenciado + Cloudflare Workers). Não é necessário criar conta na Supabase.
+Também foi configurado o `.gitignore` para evitar o envio de arquivos sensíveis ou desnecessários, como:
+
+```gitignore
+.env
+.env.local
+.env.*
+!.env.example
+node_modules/
+dist/
+.workspace/
+tsconfig.tsbuildinfo
+```
 
 ---
 
-## 🔐 Acesso Administrativo
+### 3. Deploy na Cloudflare Workers
 
-1. Acesse `/cadastro` ou a seção **Cadastro rápido** na home.
-2. Após criar a conta, acesse `/admin`.
-3. Caso ainda não exista nenhum admin no sistema, clique em **"Reivindicar admin"** — o botão só funciona para o primeiro usuário.
-4. Após promovido, todos os módulos do painel ficam disponíveis.
+O projeto foi publicado usando **Cloudflare Workers** com **Wrangler**.
+
+Comandos principais:
+
+```bash
+npm install
+npm run build
+npx wrangler login
+npx wrangler deploy
+```
+
+No Windows PowerShell, pode ser usado:
+
+```powershell
+npm.cmd install
+npm.cmd run build
+npx.cmd wrangler login
+npx.cmd wrangler deploy
+```
 
 ---
 
-## 🧱 Arquitetura
+### 4. Configuração de secrets no Cloudflare
 
+As chaves sensíveis foram configuradas como secrets no Cloudflare, sem expor dados no GitHub:
+
+```bash
+npx wrangler secret put SUPABASE_URL
+npx wrangler secret put SUPABASE_PUBLISHABLE_KEY
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 ```
+
+---
+
+### 5. Correção de produtos e categorias
+
+Foi criada uma migration para corrigir e popular os dados do catálogo:
+
+```txt
+supabase/migrations/20260519000000_seed_products_categories_variants.sql
+```
+
+Essa migration garante que as categorias usadas no site existam no Supabase e estejam vinculadas corretamente aos produtos:
+
+- `camisas`
+- `fones`
+- `smartwatch`
+- `eletronicos`
+
+Também foram cadastrados produtos de teste ativos para cada categoria.
+
+---
+
+### 6. Correção de variações de produtos
+
+Foram cadastradas variações para os produtos, permitindo que a página de produto exiba opções antes de adicionar ao carrinho.
+
+Exemplos:
+
+- Camisas: `P`, `M`, `G`, `GG`
+- Fones: `Preto`, `Branco`, `Azul`
+- Smartwatch: `Preto`, `Prata`, `Rosa`
+- Eletrônicos: `1 metro`, `2 metros`, `20W`, `30W`
+
+---
+
+### 7. Correção das opções de pagamento
+
+O checkout foi ajustado para exibir as formas de pagamento:
+
+- Pix
+- Cartão
+- Dinheiro
+
+A página de produto também passou a destacar as formas de pagamento antes do cliente adicionar o produto à sacola.
+
+---
+
+### 8. Correção do fluxo de checkout
+
+O checkout passou a salvar corretamente:
+
+- dados do cliente;
+- endereço de entrega;
+- forma de pagamento escolhida;
+- itens do pedido;
+- variação escolhida do produto;
+- total do pedido.
+
+Após confirmar o pedido, ele é salvo no Supabase com status inicial `pending`.
+
+---
+
+### 9. Controle de administrador
+
+O sistema possui uma proteção para que apenas o primeiro usuário consiga reivindicar o papel de administrador automaticamente.
+
+Depois que já existe um admin, novos usuários são cadastrados como clientes e só podem virar admin manualmente pelo Supabase ou por outro administrador.
+
+---
+
+## Estrutura do projeto
+
+```txt
 src/
-├─ routes/              # File-based routing (TanStack Router)
-│  ├─ index.tsx         # Home (editável via /admin/site)
-│  ├─ login.tsx, cadastro.tsx
-│  ├─ c.$slug.tsx       # Categoria
-│  ├─ produto.$slug.tsx # Página de produto
-│  ├─ carrinho.tsx, checkout.tsx, minha-conta.tsx
-│  └─ admin.*.tsx       # Painel
-├─ components/          # UI compartilhada (Header, CartDrawer, ProductCard)
-├─ hooks/use-auth.tsx   # Provider com sessão + isAdmin
-├─ lib/
-│  ├─ cart.tsx          # Carrinho persistente (localStorage)
-│  ├─ siteSettings.ts   # Hook de configurações da home
-│  ├─ admin.functions.ts# Server fn — claim de primeiro admin
-│  └─ productAssets.ts  # Helpers de imagem e formatação BRL
-├─ integrations/supabase/
-│  ├─ client.ts         # Browser client (publishable key + RLS)
-│  ├─ client.server.ts  # Admin client (service role, server-only)
-│  ├─ auth-middleware.ts# requireSupabaseAuth para server fns
-│  └─ auth-attacher.ts  # Anexa Bearer token às chamadas
-└─ styles.css           # Tokens semânticos (oklch)
+├── assets/                 # Imagens do projeto
+├── components/             # Componentes reutilizáveis
+│   ├── CartDrawer.tsx
+│   ├── ProductCard.tsx
+│   └── SiteHeader.tsx
+├── hooks/                  # Hooks personalizados
+├── integrations/supabase/  # Cliente Supabase e tipos
+├── lib/                    # Funções auxiliares, carrinho e regras
+├── routes/                 # Rotas da aplicação
+│   ├── index.tsx
+│   ├── login.tsx
+│   ├── cadastro.tsx
+│   ├── c.$slug.tsx
+│   ├── produto.$slug.tsx
+│   ├── carrinho.tsx
+│   ├── checkout.tsx
+│   ├── minha-conta.tsx
+│   └── admin.*.tsx
+├── server.ts
+├── start.ts
+└── styles.css
 
-supabase/migrations/    # Schema versionado (SQL)
+supabase/
+└── migrations/             # Estrutura e dados iniciais do banco
+
+wrangler.jsonc              # Configuração da Cloudflare Workers
+vite.config.ts              # Configuração do Vite/TanStack Start
+package.json                # Scripts e dependências
 ```
 
 ---
 
-## 📈 Roadmap
+## Modelo de dados principal
 
-- [x] Catálogo, carrinho, checkout
-- [x] Painel admin completo
-- [x] Trocas e atualização automática de estoque
-- [x] Editor de conteúdo da home
-- [x] Integração Mercado Pago (Pix + Cartão) — aguardando ativação do titular da conta
-- [x] Notificações por e-mail / WhatsApp na mudança de status
-- [x] Dashboard com gráficos (Recharts já disponível)
+O banco foi estruturado com tabelas para suportar o funcionamento da loja:
+
+- `profiles`
+- `user_roles`
+- `categories`
+- `products`
+- `product_variants`
+- `orders`
+- `order_items`
+- `exchange_requests`
+- `site_settings`
+
+Também foram usados enums para controlar status e permissões:
+
+- `app_role`: `admin`, `customer`
+- `order_status`: `pending`, `paid`, `shipped`, `delivered`, `cancelled`
+- `exchange_status`: `pending`, `approved`, `rejected`, `completed`
 
 ---
 
-## 📝 Licença
+## Segurança
 
-Projeto proprietário © A Loja ST. Todos os direitos reservados.
+O projeto utiliza boas práticas básicas de segurança para uma aplicação web com backend:
+
+- RLS habilitado no Supabase.
+- Separação entre chave pública e chave de servidor.
+- `SUPABASE_SERVICE_ROLE_KEY` usada apenas em ambiente server-side.
+- Secrets configuradas no Cloudflare Workers.
+- `.env` ignorado pelo Git.
+- Painel admin protegido por autenticação e role.
+- Usuários comuns não têm permissão de administrador por padrão.
+
 
 ---
 
-## 👤 Autor
+## Autor
 
-Miguel Nóbrega Scheidegger - Desenvolvedor Full Stack Júnior | Python | TypeScript | SQL | IA Integrada
+Desenvolvido por Miguel Nóbrega Scheidegger - Desenvolvedor Full Stack Junior | Python | TypeScript | IA integração com backend, deploy em cloud e versionamento profissional.
+
