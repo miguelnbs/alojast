@@ -40,9 +40,22 @@ export function SiteHeader() {
               </button>
             </div>
           ) : (
-            <Link to="/login" className="hidden md:inline-flex items-center gap-1 rounded-sm border border-border bg-surface px-3 py-2 text-xs font-bold uppercase tracking-wider hover:border-primary">
-              <User className="h-3.5 w-3.5" /> Entrar
-            </Link>
+           <div className="flex items-center gap-2">
+  <Link
+    to="/login"
+    className="inline-flex items-center gap-1 rounded-sm border border-border bg-surface px-3 py-2 text-xs font-bold uppercase tracking-wider hover:border-primary"
+  >
+    <User className="h-3.5 w-3.5" />
+    <span className="hidden sm:inline">Entrar</span>
+  </Link>
+
+  <Link
+    to="/cadastro"
+    className="hidden sm:inline-flex items-center gap-1 rounded-sm bg-primary px-3 py-2 text-xs font-bold uppercase tracking-wider text-primary-foreground hover:brightness-110"
+  >
+    Criar conta
+  </Link>
+</div>
           )}
           <CartButton />
         </div>
