@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
 import { CartProvider } from "@/lib/cart";
 import { CartDrawer } from "@/components/CartDrawer";
+import { SiteVisualSettings } from "@/components/SiteVisualSettings";
 
 import appCss from "../styles.css?url";
 
@@ -22,7 +23,10 @@ function NotFoundComponent() {
         <h2 className="mt-4 text-xl font-semibold text-foreground">Página não encontrada</h2>
         <p className="mt-2 text-sm text-muted-foreground">A página que você procura não existe.</p>
         <div className="mt-6">
-          <Link to="/" className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
+          >
             Voltar
           </Link>
         </div>
@@ -40,10 +44,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <h1 className="text-xl font-semibold text-foreground">Algo deu errado</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button onClick={() => { router.invalidate(); reset(); }} className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:brightness-110"
+          >
             Tentar novamente
           </button>
-          <a href="/" className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent">
+          <a
+            href="/"
+            className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
+          >
             Voltar
           </a>
         </div>
@@ -58,7 +71,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "A Loja ST — Eletrônicos, Camisas e Variedades" },
-      { name: "description", content: "Loja oficial ST. Fones, smartwatches, camisas e eletrônicos com entrega rápida. Pix, cartão e dinheiro." },
+      {
+        name: "description",
+        content:
+          "Loja oficial ST. Fones, smartwatches, camisas e eletrônicos com entrega rápida. Pix, cartão e dinheiro.",
+      },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
@@ -71,7 +88,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         {children}
         <Scripts />
@@ -86,6 +105,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
+          <SiteVisualSettings />
           <Outlet />
           <CartDrawer />
           <Toaster />

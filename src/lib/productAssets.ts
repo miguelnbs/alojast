@@ -1,10 +1,10 @@
 // Resolve product image filenames stored in DB to bundled Vite assets.
-const productImages = import.meta.glob("@/assets/products/*.jpg", {
+const productImages = import.meta.glob("/src/assets/products/*.jpg", {
   eager: true,
   import: "default",
 }) as Record<string, string>;
 
-const categoryImages = import.meta.glob("@/assets/cat-*.jpg", {
+const categoryImages = import.meta.glob("/src/assets/cat-*.jpg", {
   eager: true,
   import: "default",
 }) as Record<string, string>;

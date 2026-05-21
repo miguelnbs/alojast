@@ -1,5 +1,13 @@
 import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Package2, ShoppingBag, RefreshCw, ShieldCheck, FileEdit } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package2,
+  ShoppingBag,
+  RefreshCw,
+  ShieldCheck,
+  FileEdit,
+  Tags,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useServerFn } from "@tanstack/react-start";
@@ -19,6 +27,7 @@ export const Route = createFileRoute("/admin")({
 const NAV: { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/produtos", label: "Produtos", icon: Package2 },
+  { to: "/admin/categorias", label: "Categorias", icon: Tags },
   { to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
   { to: "/admin/trocas", label: "Trocas", icon: RefreshCw },
   { to: "/admin/site", label: "Editar site", icon: FileEdit },
@@ -48,14 +57,25 @@ function AdminLayout() {
           {NAV.map((n) => {
             const active = n.exact ? path === n.to : path.startsWith(n.to);
             return (
-              <Link key={n.to} to={n.to} className={`flex items-center gap-2 rounded-sm px-3 py-2 text-sm ${active ? "bg-primary text-primary-foreground" : "hover:bg-surface-2"}`}>
+              <Link
+                key={n.to}
+                to={n.to}
+                className={`flex items-center gap-2 rounded-sm px-3 py-2 text-sm ${active ? "bg-primary text-primary-foreground" : "hover:bg-surface-2"}`}
+              >
                 <n.icon className="h-4 w-4" /> {n.label}
               </Link>
             );
           })}
-          <Link to="/" className="mt-4 block px-3 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary">← Voltar à loja</Link>
+          <Link
+            to="/"
+            className="mt-4 block px-3 py-2 text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
+          >
+            ← Voltar à loja
+          </Link>
         </nav>
-        <main><Outlet /></main>
+        <main>
+          <Outlet />
+        </main>
       </div>
     </div>
   );
@@ -72,8 +92,8 @@ function ClaimAdmin() {
       await claim({});
       toast.success("Você agora é admin! Recarregando...");
       setTimeout(() => window.location.reload(), 800);
-    } catch (e: any) {
-      toast.error(e.message ?? "Erro");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro");
     } finally {
       setLoading(false);
     }
@@ -86,13 +106,25 @@ function ClaimAdmin() {
       <p className="mt-2 text-sm text-muted-foreground">Esta área é só para administradores.</p>
       {user && (
         <div className="mt-8 rounded-sm border border-border bg-surface p-6">
-          <p className="text-sm">Se você é o dono da loja e ainda não há admin cadastrado, clique abaixo para se tornar admin (válido só pra primeira vez).</p>
-          <button onClick={run} disabled={loading} className="mt-4 w-full rounded-sm bg-primary py-3 text-sm font-bold uppercase tracking-wider text-primary-foreground hover:brightness-110 disabled:opacity-60">
+          <p className="text-sm">
+            Se você é o dono da loja e ainda não há admin cadastrado, clique abaixo para se tornar
+            admin (válido só pra primeira vez).
+          </p>
+          <button
+            onClick={run}
+            disabled={loading}
+            className="mt-4 w-full rounded-sm bg-primary py-3 text-sm font-bold uppercase tracking-wider text-primary-foreground hover:brightness-110 disabled:opacity-60"
+          >
             {loading ? "..." : "Reivindicar admin"}
           </button>
         </div>
       )}
-      <Link to="/" className="mt-8 inline-block text-xs uppercase tracking-wider text-muted-foreground hover:text-primary">← Voltar à loja</Link>
+      <Link
+        to="/"
+        className="mt-8 inline-block text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
+      >
+        ← Voltar à loja
+      </Link>
     </div>
   );
 }
